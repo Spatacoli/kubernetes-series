@@ -1,0 +1,13 @@
+grafana:
+  adminPassword: "grafanaAdminPassword"
+  service:
+    type: ClusterIP
+
+prometheus:
+  prometheusSpec:
+    retention: 30d
+    storageSpec: {}
+
+prometheus-node-exporter:
+  hostRootFsMount:
+    enabled: false

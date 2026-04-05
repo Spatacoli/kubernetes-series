@@ -1,0 +1,13 @@
+  # test-lb.yaml
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: test-lb
+    namespace: default
+  spec:
+    type: LoadBalancer
+    ports:
+      - port: 80
+        targetPort: 80
+    selector:
+      app: doesnt-matter

@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: gitea
+        image: gitea/gitea:1.25.4-rootless
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        ports:
+        - containerPort: 3000
+          name: http
+        - containerPort: 2222
+          name: ssh
+        env:
+        - name: GITEA__RUN_USER
+          value: "git"
+        - name: USER
+          value: "git"
+        - name: USER_UID
+          value: "2000"
+        - name: USER_GID
+          value: "2000"
+        - name: RUN_USER
+          value: "git"
+        - name: GITEA__database__DB_TYPE
+          value: "sqlite3"
+        - name: GITEA__server__DOMAIN
+          value: gitea.spatacoli.xyz
+        - name: GITEA__server__ROOT_URL
+          value: http://gitea.spatacoli.xyz/
+        - name: GITEA__server__REVERSE_PROXY_LIMIT
+          value: "1"
+        - name: GITEA__security__REVERSE_PROXY_TRUSTED_PROXIES
+          value: "10.0.0.0/8"
+        - name: GITEA__server__SSH_LISTEN_PORT
+          value: "2222"
+        - name: GITEA__server__SSH_PORT
+          value: "2222"
+        - name: GITEA_WORK_DIR
+          value: "/data"
+        - name: GITEA_CUSTOM
+          value: "/data/custom"
+        - name: GITEA_TEMP
+          value: "/data/tmp"
+        - name: GITEA_APP_INI
+          value: "/data/gitea/conf/app.ini"
+        - name: HOME
+          value: "/data/git"
+        volumeMounts:
+        - name: gitea-storage
+          mountPath: /data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: gitea-storage
+        persistentVolumeClaim:
+          claimName: gitea-pvc

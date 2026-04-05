@@ -1,0 +1,20 @@
+  # clusterissuer-staging.yaml
+  apiVersion: cert-manager.io/v1
+  kind: ClusterIssuer
+  metadata:
+    name: letsencrypt-staging
+  spec:
+    acme:
+      email: <ENTER YOUR EMAIL ADDRESS HERE>
+      server: https://acme-staging-v02.api.letsencrypt.org/directory
+      privateKeySecretRef:
+        name: letsencrypt-staging-key
+      solvers:
+        - dns01:
+            webhook:
+              groupName: acme.dnsimple.com
+              solverName: dnsimple
+              config:
+                tokenSecretRef:
+                  name: cert-manager-webhook-dnsimple
+                  key: token

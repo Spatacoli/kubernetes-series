@@ -1,0 +1,24 @@
+grafana:
+  adminPassword: "grafanaAdminPassword"
+  grafana.ini:
+    server:
+      domain: grafana.spatacoli.xyz
+      root_url: https://grafana.spatacoli.xyz/
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - grafana.spatacoli.xyz
+    path: /
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: "true"
+
+prometheus:
+  prometheusSpec:
+    retention: 30d
+    storageSpec: {}
+
+prometheus-node-exporter:
+  hostRootFsMount:
+    enabled: false

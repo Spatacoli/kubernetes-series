@@ -1,0 +1,24 @@
+  service:
+    type: LoadBalancer
+
+  ingressClass:
+    enabled: true
+
+  ingressRoute:
+    dashboard:
+      enabled: true
+
+  api:
+    dashboard: true
+    insecure: true
+
+  ports:
+    traefik:
+      port: 9000
+      expose:
+        default: false
+
+  providers:
+    kubernetesIngress:
+      publishedService:
+        enabled: true
